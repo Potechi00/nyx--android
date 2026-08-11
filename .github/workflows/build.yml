@@ -43,14 +43,16 @@ jobs:
           libffi-dev \
           libssl-dev \
           unzip \
-          wget
+          wget \
+          m4 \
+          autoconf-archive
     
-    - name: 🔧 Fix libtool & autoconf
+    - name: 🔧 Fix libtool macros
       run: |
-        sudo apt-get install -y m4
-        autoreconf --version
-        libtool --version
-        libtoolize --version
+        libtoolize --force
+        aclocal
+        autoreconf -fi
+        echo "✅ Libtool macros fixed"
     
     - name: 📦 Install Python Dependencies
       run: |
