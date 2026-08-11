@@ -34,18 +34,15 @@ jobs:
           autoconf \
           automake \
           libtool \
-          libtool-bin \
+          libltdl-dev \
           pkg-config \
           zlib1g-dev \
-          libncurses5-dev \
-          libncursesw5-dev \
+          libncurses-dev \
           cmake \
           libffi-dev \
           libssl-dev \
           unzip \
-          wget \
-          m4 \
-          autoconf-archive
+          wget
     
     - name: 📦 Install Python Dependencies
       run: |
@@ -55,7 +52,9 @@ jobs:
     - name: 🔨 Build Debug APK
       run: |
         export ACLOCAL_PATH=/usr/share/aclocal
+        export ACLOCAL="aclocal -I /usr/share/aclocal"
         libtoolize --force --copy --install 2>/dev/null || true
+        autoreconf --install --verbose 2>/dev/null || true
         buildozer android debug
     
     - name: 📤 Upload APK Artifact
