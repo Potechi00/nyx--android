@@ -1,4 +1,4 @@
-name: Build NYX APK
+name: 🔨 Build NYX Android APK
 
 on:
   push:
@@ -8,32 +8,75 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Checkout code
+    - name: 📥 Checkout code
       uses: actions/checkout@v4
-
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
+    
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
       with:
-        java-version: '17'
-        distribution: 'temurin'
-
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Install Buildozer
+        python-version: '3.10'
+    
+    - name: 📦 Install System Dependencies
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y python3-pip build-essential git autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev unzip wget
-        pip3 install --upgrade pip
-        pip3 install buildozer cython virtualenv
+        sudo apt-get install -y \
+          python3-pip \
+          build-essential \
+          git \
+          autoconf \
+          libtool \
+          pkg-config \
+          zlib1g-dev \
+          libncurses5-dev \
+          libncursesw5-dev \
+          cmake \
+          libffi-dev \
+          libssl-dev \
+          openjdk-17-jdk \
+          unzip \
+          wget
 
-    - name: Build APK
-      run: buildozer android debug
-
-    - name: Upload APK
+    - name: ☕ Setup Java 17
+      run: |
+        sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+        java -version
+    
+    - name: 📦 Install Python Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install buildozer cython virtualenv
+    
+    - name: 📜 Accept Android SDK Licenses
+      run: |
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/licenses
+        echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> /home/runner/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo "yes" | sdkmanager --licenses || true
+    
+    - name: 🔨 Build Debug APK
+      run: |
+        yes | buildozer android debug
+    
+    - name: 📤 Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: nyx-debug-apk
+        name: nyx-android-debug-apk
         path: bin/*.apk
+    
+    - name: 📋 Create GitHub Release
+      if: success()
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v0.1-build-${{ github.run_number }}
+        name: "🌑 NYX v0.1 - Build #${{ github.run_number }}"
+        body: |
+          ## 🔨 Build otomatis
+          Download APK di bawah & install.
+        files: bin/*.apk
+        draft: false
+        prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
