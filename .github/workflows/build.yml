@@ -47,6 +47,15 @@ jobs:
           m4 \
           autoconf-archive
     
+    - name: 🔧 Export libtool macros path
+      run: |
+        export ACLOCAL_PATH=/usr/share/aclocal
+        export AUTOMAKE=/usr/bin/automake
+        export AUTOCONF=/usr/bin/autoconf
+        libtoolize --force --copy
+        echo "ACLOCAL_PATH=/usr/share/aclocal" >> $GITHUB_ENV
+        echo "✅ Macro path exported"
+    
     - name: 📦 Install Python Dependencies
       run: |
         pip install --upgrade pip
@@ -54,6 +63,7 @@ jobs:
     
     - name: 🔨 Build Debug APK
       run: |
+        export ACLOCAL_PATH=/usr/share/aclocal
         buildozer android debug
     
     - name: 📤 Upload APK Artifact
