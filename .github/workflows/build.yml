@@ -47,13 +47,6 @@ jobs:
           m4 \
           autoconf-archive
     
-    - name: 🔧 Setup autotools and libtool
-      run: |
-        sudo apt-get install -y libtool-bin libtool m4 autoconf-archive pkg-config
-        libtoolize --force --copy --install
-        sudo aclocal --install -I /usr/share/aclocal
-        echo "✅ Autotools & libtool ready"
-    
     - name: 📦 Install Python Dependencies
       run: |
         pip install --upgrade pip
@@ -62,9 +55,7 @@ jobs:
     - name: 🔨 Build Debug APK
       run: |
         export ACLOCAL_PATH=/usr/share/aclocal
-        export LDFLAGS="-L/usr/lib/x86_64-linux-gnu"
         libtoolize --force --copy --install 2>/dev/null || true
-        aclocal -I /usr/share/aclocal || true
         buildozer android debug
     
     - name: 📤 Upload APK Artifact
