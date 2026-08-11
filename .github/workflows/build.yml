@@ -47,12 +47,6 @@ jobs:
           m4 \
           autoconf-archive
     
-    - name: 🔧 Fix libtool macros
-      run: |
-        libtoolize --force
-        autoreconf -fi || true
-        echo "✅ Libtool macros fixed"
-    
     - name: 📦 Install Python Dependencies
       run: |
         pip install --upgrade pip
