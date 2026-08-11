@@ -32,7 +32,9 @@ jobs:
           build-essential \
           git \
           autoconf \
+          automake \
           libtool \
+          libtool-bin \
           pkg-config \
           zlib1g-dev \
           libncurses5-dev \
@@ -42,6 +44,13 @@ jobs:
           libssl-dev \
           unzip \
           wget
+    
+    - name: 🔧 Fix libtool & autoconf
+      run: |
+        sudo apt-get install -y m4
+        autoreconf --version
+        libtool --version
+        libtoolize --version
     
     - name: 📦 Install Python Dependencies
       run: |
@@ -66,7 +75,7 @@ jobs:
         name: "🌑 NYX v0.1 - Build #${{ github.run_number }}"
         body: |
           ## 🔨 Build otomatis
-          Download APK & install di HP.
+          Download APK & install.
         files: bin/*.apk
         draft: false
         prerelease: true
