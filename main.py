@@ -1,33 +1,70 @@
+"""
+🌑 NYX Android - Personal AI Assistant
+"""
+
+import kivy
+kivy.require('2.2.1')
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.clock import Clock
-import json
-import os
+from kivy.uix.button import Button
+from kivy.core.window import Window
 
-# Sederhana: Kita pake Vosk buat offline voice recognition 
-# (Kita panggil lewat terminal dulu biar gak berat di APK)
+Window.clearcolor = (0.05, 0.05, 0.08, 1)
 
-class NyxMain(BoxLayout):
+class NyxUI(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.label = Label(text="Nyx siap membantu...")
-        self.add_widget(self.label)
+        self.orientation = 'vertical'
+        self.padding = 30
+        self.spacing = 15
         
-        btn = Button(text="Dengar Perintah Suara (Offline)")
-        btn.bind(on_press=self.dengar_suara)
+        self.add_widget(Label(
+            text='🌑 NYX',
+            font_size='40sp',
+            color=(0.8, 0.8, 1, 1),
+            size_hint=(1, 0.15)
+        ))
+        
+        self.status = Label(
+            text='Mendengarkan...',
+            font_size='18sp',
+            color=(0.6, 0.6, 0.9, 1),
+            size_hint=(1, 0.1)
+        )
+        self.add_widget(self.status)
+        
+        self.orb = Label(
+            text='🌑',
+            font_size='80sp',
+            size_hint=(1, 0.3)
+        )
+        self.add_widget(self.orb)
+        
+        self.add_widget(Label(
+            text='Ucapkan "Nyx" diikuti perintah\n\nContoh:\n"Nyx, timer 5 menit"\n"Nyx, 100 + 200"',
+            font_size='14sp',
+            color=(0.5, 0.5, 0.7, 1),
+            size_hint=(1, 0.3),
+            halign='center'
+        ))
+        
+        btn = Button(
+            text='🎤 Ketuk untuk bicara',
+            size_hint=(1, 0.1),
+            background_color=(0.15, 0.15, 0.35, 1)
+        )
+        btn.bind(on_press=self.on_tap)
         self.add_widget(btn)
-
-    def dengar_suara(self, instance):
-        self.label.text = "Mendengarkan... (Simulasi)"
-        # Di sini nanti kita bakal sambungin ke Vosk atau engine STT
-        # Buat sekarang, kita kasih feedback aja
-        Clock.schedule_once(lambda dt: setattr(self.label, 'text', "Kata kunci 'Nyx' terdeteksi!"), 2)
+    
+    def on_tap(self, instance):
+        self.status.text = '🎤 Mendengarkan...'
+        self.orb.text = '🟣'
 
 class NyxApp(App):
     def build(self):
-        return NyxMain()
+        return NyxUI()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     NyxApp().run()
