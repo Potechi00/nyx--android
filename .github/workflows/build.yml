@@ -50,8 +50,7 @@ jobs:
     - name: 🔧 Fix libtool macros
       run: |
         libtoolize --force
-        aclocal
-        autoreconf -fi
+        autoreconf -fi || true
         echo "✅ Libtool macros fixed"
     
     - name: 📦 Install Python Dependencies
@@ -77,7 +76,7 @@ jobs:
         name: "🌑 NYX v0.1 - Build #${{ github.run_number }}"
         body: |
           ## 🔨 Build otomatis
-          Download APK & install.
+          Download APK & install di HP.
         files: bin/*.apk
         draft: false
         prerelease: true
