@@ -1,0 +1,39 @@
+name: Build NYX APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Install Buildozer
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y python3-pip build-essential git autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev unzip wget
+        pip3 install --upgrade pip
+        pip3 install buildozer cython virtualenv
+
+    - name: Build APK
+      run: buildozer android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: nyx-debug-apk
+        path: bin/*.apk
