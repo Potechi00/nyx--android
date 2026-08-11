@@ -47,16 +47,19 @@ jobs:
     - name: 📦 Install Python Dependencies
       run: |
         pip install --upgrade pip
-        pip install buildozer==1.5.0 cython virtualenv
+        pip install buildozer==1.5.0 cython==0.29.36 virtualenv
     
-    - name: 🧹 Clean Buildozer Cache
+    - name: 🧹 Aggressive Clean Cache
       run: |
         rm -rf .buildozer
         rm -rf ~/.buildozer
-        echo "✅ Cache cleared"
+        rm -rf ~/.cache/pip
+        rm -rf ~/.gradle/caches
+        echo "✅ All cache cleared"
     
     - name: 🔨 Build Debug APK
       run: |
+        export USE_SDL2=1
         export ACLOCAL_PATH=/usr/share/aclocal
         export ACLOCAL="aclocal -I /usr/share/aclocal"
         libtoolize --force --copy --install 2>/dev/null || true
