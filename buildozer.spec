@@ -6,7 +6,6 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 0.1
 
-# 🟢 p4a v2024.01.21 otomatis mencocokkan hostpython3 & python3 di versi 3.11
 requirements = python3,kivy==2.3.0,plyer
 
 orientation = portrait
@@ -17,6 +16,9 @@ android.ndk = 25b
 android.accept_sdk_license = True
 android.archs = arm64-v8a, armeabi-v7a
 p4a.bootstrap = sdl2
+
+# 🟢 KUNCI UTAMA: Paksa Buildozer mengunduh versi stabil v2024.01.21 (Python 3.11)
+p4a.branch = v2024.01.21
 
 [buildozer]
 log_level = 2
