@@ -1,6 +1,6 @@
 """
 🌑 NYX - Personal AI Assistant
-Seamless Vortex & Moving Cinematic Background Edition
+Crash-Proof & Seamless Vortex Edition
 """
 
 import kivy
@@ -41,13 +41,12 @@ class RotatingVortex(FloatLayout):
         super().__init__(**kwargs)
         self.angle = 0
 
-        # ✂️ STENCIL MASKING: Memotong semua bagian di luar lingkaran
+        # ✂️ STENCIL MASKING: Memotong bentuk kotak menjadi lingkaran
         with self.canvas.before:
             StencilPush()
             self.mask = Ellipse(pos=self.pos, size=self.size)
             StencilUse()
 
-        # Gambar Vortex
         self.vortex_img = Image(
             source='vortex.png',
             allow_stretch=True,
@@ -64,7 +63,6 @@ class RotatingVortex(FloatLayout):
 
         self.add_widget(self.vortex_img)
 
-        # Matikan Stencil
         with self.canvas.after:
             StencilUnpush()
 
@@ -174,7 +172,7 @@ class VoiceFAB(Widget):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🏷️ GLASSMORPHISM CARD COMPONENTS
+# 🏷️ GLASSMORPHISM COMPONENTS
 # ═══════════════════════════════════════════════════════════════════════════
 
 class GlassStatusCard(FloatLayout):
@@ -210,6 +208,32 @@ class GlassStatusCard(FloatLayout):
         self.label.text = text
 
 
+class SubtitleBox(FloatLayout):
+    """Kapsul Subtitle Hint (Aman dari Bug)"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.size_hint = (0.72, 0.05)
+        self.pos_hint = {'center_x': 0.5, 'center_y': 0.31}
+
+        with self.canvas.before:
+            Color(0.05, 0.03, 0.12, 0.65)
+            self.bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[14])
+
+        self.bind(pos=self._update_bg, size=self._update_bg)
+
+        self.label = Label(
+            text='Ucapkan "Nyx" diikuti perintah',
+            font_size='12.5sp',
+            color=GRAY_TEXT,
+            pos_hint={'center_x': 0.5, 'center_y': 0.5}
+        )
+        self.add_widget(self.label)
+
+    def _update_bg(self, *args):
+        self.bg.pos = self.pos
+        self.bg.size = self.size
+
+
 class SuggestionChip(Label):
     """Chip Perintah Cepat Kapsul"""
     def __init__(self, **kwargs):
@@ -243,7 +267,7 @@ class SuggestionChip(Label):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 📱 MAIN SCREEN (PRO UI SEAMLESS VORTEX)
+# 📱 MAIN SCREEN (NYX UI STABLE)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class NyxMainScreen(FloatLayout):
@@ -253,7 +277,7 @@ class NyxMainScreen(FloatLayout):
         self._build_ui()
 
     def _build_ui(self):
-        # 1. Background Nebula (Ukuran dibuat 1.25x agar bisa bergerak mengambang)
+        # 1. Background Nebula
         self.bg_image = Image(
             source='nebula01.jpg',
             allow_stretch=True,
@@ -263,16 +287,16 @@ class NyxMainScreen(FloatLayout):
         )
         self.add_widget(self.bg_image)
 
-        # 🌌 ANIMASI BACKGROUND BERGERAK LAMBAT (REALISTIK)
+        # Animasi Background Floating Lambat
         bg_anim = (
             Animation(pos_hint={'center_x': 0.46, 'center_y': 0.54}, duration=14, t='in_out_sine') +
             Animation(pos_hint={'center_x': 0.54, 'center_y': 0.46}, duration=16, t='in_out_sine') +
             Animation(pos_hint={'center_x': 0.50, 'center_y': 0.50}, duration=14, t='in_out_sine')
         )
-        bg_anim.repeat = True
+        bg_anim.bind(on_complete=lambda *x: bg_anim.start(self.bg_image))
         bg_anim.start(self.bg_image)
 
-        # 2. Header Bar Glassmorphism
+        # 2. Header Bar
         header = FloatLayout(size_hint=(1, 0.09), pos_hint={'x': 0, 'top': 1.0})
         
         with header.canvas.before:
@@ -282,7 +306,6 @@ class NyxMainScreen(FloatLayout):
             Line(points=[0, Window.height * 0.91, Window.width, Window.height * 0.91], width=1)
 
         icon_menu = CanvasIcon(icon_type="menu", pos_hint={'x': 0.06, 'center_y': 0.5})
-        
         title = Label(
             text="N Y X",
             font_size='28sp',
@@ -290,7 +313,6 @@ class NyxMainScreen(FloatLayout):
             bold=True,
             pos_hint={'center_x': 0.5, 'center_y': 0.5}
         )
-        
         icon_settings = CanvasIcon(icon_type="settings", pos_hint={'right': 0.94, 'center_y': 0.5})
 
         header.add_widget(icon_menu)
@@ -298,41 +320,19 @@ class NyxMainScreen(FloatLayout):
         header.add_widget(icon_settings)
         self.add_widget(header)
 
-        # 3. Status Glassmorphism Card
+        # 3. Status Card
         self.status_card = GlassStatusCard()
         self.add_widget(self.status_card)
 
-        # 4. Black Hole Rotating Vortex (Potong Lingkaran Seamless)
+        # 4. Black Hole Rotating Vortex (Seamless Circular Mask)
         self.vortex = RotatingVortex(
             size_hint=(0.75, 0.38),
             pos_hint={'center_x': 0.5, 'center_y': 0.52}
         )
         self.add_widget(self.vortex)
 
-        # 5. Kapsul Subtitle Hint (Bisa Terbaca Sangat Jelas)
-        sub_box = FloatLayout(
-            size_hint=(0.72, 0.05),
-            pos_hint={'center_x': 0.5, 'center_y': 0.31}
-        )
-        with sub_box.canvas.before:
-            Color(0.04, 0.03, 0.10, 0.65)
-            RoundedRectangle(pos=sub_box.pos, size=sub_box.size, radius=[14])
-
-        sub_box.bind(pos=lambda obj, val: setattr(sub_bg, 'pos', val), size=lambda obj, val: setattr(sub_bg, 'size', val))
-        
-        sub_label = Label(
-            text='Ucapkan "Nyx" diikuti perintah',
-            font_size='12.5sp',
-            color=GRAY_TEXT,
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
-        )
-        
-        # Gambar background kapsul subtitle
-        with sub_box.canvas.before:
-            Color(0.05, 0.03, 0.12, 0.65)
-            sub_bg = RoundedRectangle(pos=sub_box.pos, size=sub_box.size, radius=[14])
-
-        sub_box.add_widget(sub_label)
+        # 5. Subtitle Hint
+        sub_box = SubtitleBox()
         self.add_widget(sub_box)
 
         # 6. Suggestion Chips
@@ -350,7 +350,7 @@ class NyxMainScreen(FloatLayout):
         fab = VoiceFAB(pos_hint={'right': 0.94, 'center_y': 0.20})
         self.add_widget(fab)
 
-        # 8. Glassmorphism Navigation Bar Bawah
+        # 8. Navigation Bar Bawah
         nav_bar = FloatLayout(size_hint=(1, 0.09), pos_hint={'x': 0, 'y': 0})
         
         with nav_bar.canvas.before:
