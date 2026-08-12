@@ -14,13 +14,11 @@ from kivy.uix.image import Image
 from kivy.uix.widget import Widget
 from kivy.graphics import (
     Color, Rectangle, Line, RoundedRectangle, 
-    PushMatrix, PopMatrix, Rotate, Ellipse, BlendFunc
+    PushMatrix, PopMatrix, Rotate, Ellipse
 )
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.animation import Animation
-
-Window.clearcolor = (0, 0, 0, 1)
 
 # Skema Warna Elegan
 WHITE_BRIGHT = (1.0, 1.0, 1.0, 1)
@@ -30,7 +28,7 @@ GRAY_TEXT    = (0.75, 0.75, 0.85, 0.85)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🌀 GLOWING ROTATING VORTEX
+# 🌀 GLOWING ROTATING VORTEX (STABLE FOR ANDROID GPU)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class RotatingVortex(FloatLayout):
@@ -48,11 +46,9 @@ class RotatingVortex(FloatLayout):
         
         with self.vortex_img.canvas.before:
             PushMatrix()
-            BlendFunc('src_alpha', 'one')
             self.rot = Rotate(angle=0, axis=(0, 0, 1), origin=self.center)
         
         with self.vortex_img.canvas.after:
-            BlendFunc('src_alpha', 'one_minus_src_alpha')
             PopMatrix()
 
         self.add_widget(self.vortex_img)
@@ -158,7 +154,7 @@ class VoiceFAB(Widget):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🏷️ GLASSMORPHISM COMPONENTS (DYNAMIC BINDING)
+# 🏷️ GLASSMORPHISM COMPONENTS
 # ═══════════════════════════════════════════════════════════════════════════
 
 class HeaderBar(FloatLayout):
@@ -310,7 +306,7 @@ class NyxMainScreen(FloatLayout):
         )
         self.add_widget(self.bg_image)
 
-        # Animasi Floating
+        # Animasi Floating Background
         bg_anim = (
             Animation(pos_hint={'center_x': 0.46, 'center_y': 0.54}, duration=14, t='in_out_sine') +
             Animation(pos_hint={'center_x': 0.54, 'center_y': 0.46}, duration=16, t='in_out_sine') +
@@ -399,6 +395,8 @@ class NyxMainScreen(FloatLayout):
 
 class NyxApp(App):
     def build(self):
+        # 🟢 DIPERBAIKI: Mengatur warna background window di dalam lifecycle Kivy App yang aman
+        Window.clearcolor = (0, 0, 0, 1)
         return NyxMainScreen()
 
 
