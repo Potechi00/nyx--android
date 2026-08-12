@@ -1,6 +1,6 @@
 """
 🌑 NYX - Personal AI Assistant
-Crash-Proof & Additive Glowing Vortex Edition
+100% Android Stable & Production Ready Edition
 """
 
 import kivy
@@ -22,7 +22,7 @@ from kivy.animation import Animation
 
 Window.clearcolor = (0, 0, 0, 1)
 
-# Skema Warna Elegan & High Contrast
+# Skema Warna Elegan
 WHITE_BRIGHT = (1.0, 1.0, 1.0, 1)
 WHITE_SOFT   = (0.95, 0.95, 1.0, 0.90)
 PURPLE_GLOW  = (0.65, 0.25, 0.98, 1)
@@ -30,12 +30,10 @@ GRAY_TEXT    = (0.75, 0.75, 0.85, 0.85)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🌀 GLOWING ROTATING VORTEX (ADDITIVE BLENDING - NO CRASH)
+# 🌀 GLOWING ROTATING VORTEX
 # ═══════════════════════════════════════════════════════════════════════════
 
 class RotatingVortex(FloatLayout):
-    """Memuat vortex.png & membuat latar hitamnya transparan bercahaya"""
-    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.angle = 0
@@ -48,14 +46,13 @@ class RotatingVortex(FloatLayout):
             pos_hint={'center_x': 0.5, 'center_y': 0.5}
         )
         
-        # 🌟 ADDITIVE BLENDING: Hitam pekat otomatis transparan, warna terang jadi glowing
         with self.vortex_img.canvas.before:
             PushMatrix()
-            BlendFunc('src_alpha', 'one')  # Mode Glow / Additive
+            BlendFunc('src_alpha', 'one')
             self.rot = Rotate(angle=0, axis=(0, 0, 1), origin=self.center)
         
         with self.vortex_img.canvas.after:
-            BlendFunc('src_alpha', 'one_minus_src_alpha')  # Kembalikan mode normal
+            BlendFunc('src_alpha', 'one_minus_src_alpha')
             PopMatrix()
 
         self.add_widget(self.vortex_img)
@@ -75,7 +72,6 @@ class RotatingVortex(FloatLayout):
 # ═══════════════════════════════════════════════════════════════════════════
 
 class CanvasIcon(Widget):
-    """Ikon Vektor Presisi Tinggi"""
     def __init__(self, icon_type="menu", **kwargs):
         super().__init__(**kwargs)
         self.icon_type = icon_type
@@ -122,7 +118,6 @@ class CanvasIcon(Widget):
 
 
 class VoiceFAB(Widget):
-    """Tombol Mikrofon Ungu Glowing"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size_hint = (None, None)
@@ -163,11 +158,50 @@ class VoiceFAB(Widget):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🏷️ GLASSMORPHISM COMPONENTS
+# 🏷️ GLASSMORPHISM COMPONENTS (DYNAMIC BINDING)
 # ═══════════════════════════════════════════════════════════════════════════
 
+class HeaderBar(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.size_hint = (1, 0.09)
+        self.pos_hint = {'x': 0, 'top': 1.0}
+
+        with self.canvas.before:
+            Color(0.02, 0.01, 0.05, 0.80)
+            self.rect = Rectangle(pos=self.pos, size=self.size)
+            Color(0.4, 0.2, 0.6, 0.25)
+            self.line = Line(points=[self.x, self.y, self.right, self.y], width=1)
+
+        self.bind(pos=self._update, size=self._update)
+
+    def _update(self, *args):
+        self.rect.pos = self.pos
+        self.rect.size = self.size
+        self.line.points = [self.x, self.y, self.right, self.y]
+
+
+class NavBar(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.size_hint = (1, 0.09)
+        self.pos_hint = {'x': 0, 'y': 0}
+
+        with self.canvas.before:
+            Color(0.03, 0.02, 0.07, 0.92)
+            self.rect = Rectangle(pos=self.pos, size=self.size)
+            Color(0.3, 0.2, 0.5, 0.3)
+            self.line = Line(points=[self.x, self.top, self.right, self.top], width=1)
+
+        self.bind(pos=self._update, size=self._update)
+
+    def _update(self, *args):
+        self.rect.pos = self.pos
+        self.rect.size = self.size
+        self.line.points = [self.x, self.top, self.right, self.top]
+
+
 class GlassStatusCard(FloatLayout):
-    """Kartu Status Utama Atas"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size_hint = (0.85, 0.065)
@@ -200,7 +234,6 @@ class GlassStatusCard(FloatLayout):
 
 
 class SubtitleBox(FloatLayout):
-    """Kapsul Subtitle Hint"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size_hint = (0.72, 0.05)
@@ -226,7 +259,6 @@ class SubtitleBox(FloatLayout):
 
 
 class SuggestionChip(Label):
-    """Chip Perintah Cepat Kapsul"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.font_size = '12.5sp'
@@ -258,7 +290,7 @@ class SuggestionChip(Label):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 📱 MAIN SCREEN (NYX UI STABLE & GLOWING)
+# 📱 MAIN SCREEN
 # ═══════════════════════════════════════════════════════════════════════════
 
 class NyxMainScreen(FloatLayout):
@@ -278,7 +310,7 @@ class NyxMainScreen(FloatLayout):
         )
         self.add_widget(self.bg_image)
 
-        # Animasi Background Floating Lambat
+        # Animasi Floating
         bg_anim = (
             Animation(pos_hint={'center_x': 0.46, 'center_y': 0.54}, duration=14, t='in_out_sine') +
             Animation(pos_hint={'center_x': 0.54, 'center_y': 0.46}, duration=16, t='in_out_sine') +
@@ -288,14 +320,7 @@ class NyxMainScreen(FloatLayout):
         bg_anim.start(self.bg_image)
 
         # 2. Header Bar
-        header = FloatLayout(size_hint=(1, 0.09), pos_hint={'x': 0, 'top': 1.0})
-        
-        with header.canvas.before:
-            Color(0.02, 0.01, 0.05, 0.80)
-            Rectangle(pos=(0, Window.height * 0.91), size=(Window.width, Window.height * 0.09))
-            Color(0.4, 0.2, 0.6, 0.25)
-            Line(points=[0, Window.height * 0.91, Window.width, Window.height * 0.91], width=1)
-
+        header = HeaderBar()
         icon_menu = CanvasIcon(icon_type="menu", pos_hint={'x': 0.06, 'center_y': 0.5})
         title = Label(
             text="N Y X",
@@ -315,7 +340,7 @@ class NyxMainScreen(FloatLayout):
         self.status_card = GlassStatusCard()
         self.add_widget(self.status_card)
 
-        # 4. Black Hole Rotating Vortex (Additive Glowing Mode - NO STENCIL CRASH)
+        # 4. Vortex
         self.vortex = RotatingVortex(
             size_hint=(0.75, 0.38),
             pos_hint={'center_x': 0.5, 'center_y': 0.52}
@@ -341,15 +366,8 @@ class NyxMainScreen(FloatLayout):
         fab = VoiceFAB(pos_hint={'right': 0.94, 'center_y': 0.20})
         self.add_widget(fab)
 
-        # 8. Navigation Bar Bawah
-        nav_bar = FloatLayout(size_hint=(1, 0.09), pos_hint={'x': 0, 'y': 0})
-        
-        with nav_bar.canvas.before:
-            Color(0.03, 0.02, 0.07, 0.92)
-            Rectangle(pos=(0, 0), size=(Window.width, Window.height * 0.09))
-            Color(0.3, 0.2, 0.5, 0.3)
-            Line(points=[0, Window.height * 0.09, Window.width, Window.height * 0.09], width=1)
-
+        # 8. Nav Bar
+        nav_bar = NavBar()
         nav_box = BoxLayout(orientation='horizontal', size_hint=(1, 1), pos_hint={'x': 0, 'y': 0})
         nav_items = [("home", "Beranda"), ("chat", "Chat"), ("action", "Aksi"), ("history", "Riwayat")]
         
