@@ -3,11 +3,11 @@ title = NYX
 package.name = nyxassistant
 package.domain = com.nyx
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
-version = 0.1
+source.include_exts = py,kv,atlas
+version = 0.2
 
-# 🟢 DIPERBAIKI: Menambahkan 'pillow' untuk mendukung gambar .jpg
-requirements = python3,kivy==2.3.0,plyer,pillow
+# 🟢 DIPERBAIKI: Menggunakan KivyMD 1.2.0 tanpa perlu library pillow
+requirements = python3,kivy==2.3.0,kivymd==1.2.0,plyer
 
 orientation = portrait
 android.permissions = RECORD_AUDIO,INTERNET
