@@ -6,7 +6,10 @@ package.domain = com.nyx
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 0.1
-requirements = hostpython3==3.11.11,python3==3.11.11,kivy==2.2.1,plyer,cython==0.29.36
+
+# 🟢 SUDAH DIPERBAIKI: Hapus cython & hostpython3 dari requirements runtime
+requirements = python3,kivy==2.2.1,plyer
+
 orientation = portrait
 
 android.permissions = RECORD_AUDIO,INTERNET
@@ -16,7 +19,8 @@ android.minapi = 24
 android.ndk = 25b
 android.accept_sdk_license = True
 
-android.archs = arm64-v8a
+# 🟢 SUDAH DIPERBAIKI: Mendukung HP 64-bit dan 32-bit/emulator
+android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
 
 p4a.bootstrap = sdl2
