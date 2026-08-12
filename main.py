@@ -1,6 +1,6 @@
 """
 🌑 NYX - Personal AI Assistant
-Crash-Proof & Seamless Vortex Edition
+Crash-Proof & Additive Glowing Vortex Edition
 """
 
 import kivy
@@ -14,8 +14,7 @@ from kivy.uix.image import Image
 from kivy.uix.widget import Widget
 from kivy.graphics import (
     Color, Rectangle, Line, RoundedRectangle, 
-    PushMatrix, PopMatrix, Rotate, Ellipse,
-    StencilPush, StencilUse, StencilUnpush
+    PushMatrix, PopMatrix, Rotate, Ellipse, BlendFunc
 )
 from kivy.core.window import Window
 from kivy.clock import Clock
@@ -31,21 +30,15 @@ GRAY_TEXT    = (0.75, 0.75, 0.85, 0.85)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🌀 SEAMLESS ROTATING VORTEX (CIRCULAR STENCIL MASK)
+# 🌀 GLOWING ROTATING VORTEX (ADDITIVE BLENDING - NO CRASH)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class RotatingVortex(FloatLayout):
-    """Memuat vortex.png & memotong ujung kotaknya menjadi LINGKARAN SEMPURNA"""
+    """Memuat vortex.png & membuat latar hitamnya transparan bercahaya"""
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.angle = 0
-
-        # ✂️ STENCIL MASKING: Memotong bentuk kotak menjadi lingkaran
-        with self.canvas.before:
-            StencilPush()
-            self.mask = Ellipse(pos=self.pos, size=self.size)
-            StencilUse()
 
         self.vortex_img = Image(
             source='vortex.png',
@@ -55,23 +48,21 @@ class RotatingVortex(FloatLayout):
             pos_hint={'center_x': 0.5, 'center_y': 0.5}
         )
         
+        # 🌟 ADDITIVE BLENDING: Hitam pekat otomatis transparan, warna terang jadi glowing
         with self.vortex_img.canvas.before:
             PushMatrix()
+            BlendFunc('src_alpha', 'one')  # Mode Glow / Additive
             self.rot = Rotate(angle=0, axis=(0, 0, 1), origin=self.center)
+        
         with self.vortex_img.canvas.after:
+            BlendFunc('src_alpha', 'one_minus_src_alpha')  # Kembalikan mode normal
             PopMatrix()
 
         self.add_widget(self.vortex_img)
-
-        with self.canvas.after:
-            StencilUnpush()
-
-        self.bind(pos=self._update_mask, size=self._update_mask)
+        self.bind(pos=self._update_rot, size=self._update_rot)
         Clock.schedule_interval(self._rotate, 1 / 30)
 
-    def _update_mask(self, *args):
-        self.mask.pos = self.pos
-        self.mask.size = self.size
+    def _update_rot(self, *args):
         self.rot.origin = self.vortex_img.center
 
     def _rotate(self, dt):
@@ -209,7 +200,7 @@ class GlassStatusCard(FloatLayout):
 
 
 class SubtitleBox(FloatLayout):
-    """Kapsul Subtitle Hint (Aman dari Bug)"""
+    """Kapsul Subtitle Hint"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size_hint = (0.72, 0.05)
@@ -267,7 +258,7 @@ class SuggestionChip(Label):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 📱 MAIN SCREEN (NYX UI STABLE)
+# 📱 MAIN SCREEN (NYX UI STABLE & GLOWING)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class NyxMainScreen(FloatLayout):
@@ -293,7 +284,7 @@ class NyxMainScreen(FloatLayout):
             Animation(pos_hint={'center_x': 0.54, 'center_y': 0.46}, duration=16, t='in_out_sine') +
             Animation(pos_hint={'center_x': 0.50, 'center_y': 0.50}, duration=14, t='in_out_sine')
         )
-        bg_anim.bind(on_complete=lambda *x: bg_anim.start(self.bg_image))
+        bg_anim.repeat = True
         bg_anim.start(self.bg_image)
 
         # 2. Header Bar
@@ -324,7 +315,7 @@ class NyxMainScreen(FloatLayout):
         self.status_card = GlassStatusCard()
         self.add_widget(self.status_card)
 
-        # 4. Black Hole Rotating Vortex (Seamless Circular Mask)
+        # 4. Black Hole Rotating Vortex (Additive Glowing Mode - NO STENCIL CRASH)
         self.vortex = RotatingVortex(
             size_hint=(0.75, 0.38),
             pos_hint={'center_x': 0.5, 'center_y': 0.52}
