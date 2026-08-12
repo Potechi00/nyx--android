@@ -1,402 +1,277 @@
 """
-🌑 NYX - Personal AI Assistant
-100% Android Stable & Production Ready Edition
+🌑 NYX V2.0 - Personal AI Assistant (Material Design Edition)
+100% Pure Code - Zero JPG/PNG Dependencies
 """
 
-import kivy
-kivy.require('2.2.1')
-
-from kivy.app import App
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.image import Image
-from kivy.uix.widget import Widget
-from kivy.graphics import (
-    Color, Rectangle, Line, RoundedRectangle, 
-    PushMatrix, PopMatrix, Rotate, Ellipse
-)
+import math
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.animation import Animation
+from kivy.graphics import Color, Ellipse, Line, PushMatrix, PopMatrix, Rotate
 
-# Skema Warna Elegan
-WHITE_BRIGHT = (1.0, 1.0, 1.0, 1)
-WHITE_SOFT   = (0.95, 0.95, 1.0, 0.90)
-PURPLE_GLOW  = (0.65, 0.25, 0.98, 1)
-GRAY_TEXT    = (0.75, 0.75, 0.85, 0.85)
+from kivymd.app import MDApp
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.card import MDCard
+from kivymd.uix.label import MDLabel
+from kivymd.uix.button import MDFloatingActionButton, MDIconButton
+
+Window.clearcolor = (0.04, 0.03, 0.08, 1)  # Deep Midnight Navy Background
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🌀 GLOWING ROTATING VORTEX (STABLE FOR ANDROID GPU)
+# 🔮 PROCEDURAL AI GLOW CORE (Vector Dynamic Core - No PNG needed!)
 # ═══════════════════════════════════════════════════════════════════════════
 
-class RotatingVortex(FloatLayout):
+class ProceduralAICore(MDFloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.angle = 0
+        self.angle_1 = 0
+        self.angle_2 = 0
+        self.pulse = 1.0
+        self.pulse_dir = 1
 
-        self.vortex_img = Image(
-            source='vortex.png',
-            allow_stretch=True,
-            keep_ratio=False,
-            size_hint=(1, 1),
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
-        )
+        self.bind(pos=self._update_canvas, size=self._update_canvas)
+        Clock.schedule_interval(self._animate, 1 / 30)
+
+    def _animate(self, dt):
+        self.angle_1 = (self.angle_1 + 1.2) % 360
+        self.angle_2 = (self.angle_2 - 0.8) % 360
         
-        with self.vortex_img.canvas.before:
+        # Animasi Denyut Jantung Core
+        self.pulse += 0.008 * self.pulse_dir
+        if self.pulse > 1.12 or self.pulse < 0.88:
+            self.pulse_dir *= -1
+
+        self._update_canvas()
+
+    def _update_canvas(self, *args):
+        self.canvas.before.clear()
+        cx, cy = self.center_x, self.center_y
+        
+        if cx == 0 or cy == 0:
+            return
+
+        with self.canvas.before:
+            # 1. Outer Glow Aura (Soft Neon Purple)
+            Color(0.55, 0.2, 0.95, 0.15)
+            r_outer = 140 * self.pulse
+            Ellipse(pos=(cx - r_outer, cy - r_outer), size=(r_outer * 2, r_outer * 2))
+
+            Color(0.65, 0.25, 0.98, 0.25)
+            r_mid = 100 * self.pulse
+            Ellipse(pos=(cx - r_mid, cy - r_mid), size=(r_mid * 2, r_mid * 2))
+
+            # 2. Rotating Orbit Rings
             PushMatrix()
-            self.rot = Rotate(angle=0, axis=(0, 0, 1), origin=self.center)
-        
-        with self.vortex_img.canvas.after:
+            Rotate(angle=self.angle_1, origin=(cx, cy))
+            Color(0.8, 0.4, 1.0, 0.6)
+            Line(ellipse=(cx - 85, cy - 30, 170, 60), width=1.8)
             PopMatrix()
 
-        self.add_widget(self.vortex_img)
-        self.bind(pos=self._update_rot, size=self._update_rot)
-        Clock.schedule_interval(self._rotate, 1 / 30)
+            PushMatrix()
+            Rotate(angle=self.angle_2, origin=(cx, cy))
+            Color(0.4, 0.7, 1.0, 0.5)
+            Line(ellipse=(cx - 30, cy - 85, 60, 170), width=1.5)
+            PopMatrix()
 
-    def _update_rot(self, *args):
-        self.rot.origin = self.vortex_img.center
+            # 3. Inner Pulsing Core
+            Color(0.75, 0.35, 1.0, 0.85)
+            r_core = 55 * self.pulse
+            Ellipse(pos=(cx - r_core, cy - r_core), size=(r_core * 2, r_core * 2))
 
-    def _rotate(self, dt):
-        self.angle = (self.angle + 0.6) % 360
-        self.rot.angle = self.angle
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# 🎨 CANVAS DRAWN ICONS & VOICE FAB
-# ═══════════════════════════════════════════════════════════════════════════
-
-class CanvasIcon(Widget):
-    def __init__(self, icon_type="menu", **kwargs):
-        super().__init__(**kwargs)
-        self.icon_type = icon_type
-        self.size_hint = (None, None)
-        self.size = (22, 22)
-        self.bind(pos=self._draw, size=self._draw)
-
-    def _draw(self, *args):
-        self.canvas.clear()
-        x, y = self.x, self.y
-        w, h = self.width, self.height
-        cx, cy = self.center_x, self.center_y
-
-        with self.canvas:
-            Color(0.9, 0.9, 1.0, 0.90)
-            
-            if self.icon_type == "menu":
-                Line(points=[x, y + h*0.75, x + w, y + h*0.75], width=2)
-                Line(points=[x, y + h*0.50, x + w*0.75, y + h*0.50], width=2)
-                Line(points=[x, y + h*0.25, x + w, y + h*0.25], width=2)
-
-            elif self.icon_type == "settings":
-                Line(ellipse=(cx - 7, cy - 7, 14, 14), width=1.8)
-                Line(ellipse=(cx - 2.5, cy - 2.5, 5, 5), width=1.5)
-
-            elif self.icon_type == "home":
-                Line(points=[x + 2, y + h*0.45, cx, y + h*0.85, x + w - 2, y + h*0.45], width=1.8)
-                Line(rectangle=(x + 4, y + 2, w - 8, h*0.45), width=1.6)
-
-            elif self.icon_type == "chat":
-                Line(rounded_rectangle=(x + 2, y + 4, w - 4, h - 8, 4), width=1.6)
-                Line(points=[x + 6, y + 4, x + 2, y], width=1.6)
-
-            elif self.icon_type == "action":
-                Line(rectangle=(x + 2, y + h/2 + 1, w/2 - 3, h/2 - 3), width=1.5)
-                Line(rectangle=(x + w/2 + 1, y + h/2 + 1, w/2 - 3, h/2 - 3), width=1.5)
-                Line(rectangle=(x + 2, y + 2, w/2 - 3, h/2 - 3), width=1.5)
-                Line(rectangle=(x + w/2 + 1, y + 2, w/2 - 3, h/2 - 3), width=1.5)
-
-            elif self.icon_type == "history":
-                Line(ellipse=(cx - 8, cy - 8, 16, 16), width=1.6)
-                Line(points=[cx, cy, cx, cy + 5], width=1.5)
-                Line(points=[cx, cy, cx + 4, cy], width=1.5)
-
-
-class VoiceFAB(Widget):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.size_hint = (None, None)
-        self.size = (64, 64)
-        self.is_active = False
-        self.bind(pos=self._draw, size=self._draw)
-
-    def _draw(self, *args):
-        self.canvas.clear()
-        cx, cy = self.center_x, self.center_y
-
-        with self.canvas:
-            Color(0.5, 0.2, 0.9, 0.35)
-            Ellipse(pos=(self.x - 5, self.y - 5), size=(self.width + 10, self.height + 10))
-
-            Color(*PURPLE_GLOW)
-            Ellipse(pos=(self.x, self.y), size=self.size)
-
-            Color(1, 1, 1, 0.95)
-            heights = [10, 22, 15, 26, 12]
-            spacing = 6
-            start_x = cx - (len(heights) * spacing) / 2 + 3
-
-            for i, h in enumerate(heights):
-                x = start_x + (i * spacing)
-                Line(points=[x, cy - h / 2, x, cy + h / 2], width=2.2)
-
-    def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):
-            self.is_active = not self.is_active
-            app = App.get_running_app()
-            if self.is_active:
-                app.root.handle_voice_start()
-            else:
-                app.root.handle_voice_stop()
-            return True
-        return super().on_touch_down(touch)
+            # 4. Center Bright Star
+            Color(1.0, 1.0, 1.0, 0.95)
+            r_center = 20 * self.pulse
+            Ellipse(pos=(cx - r_center, cy - r_center), size=(r_center * 2, r_center * 2))
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🏷️ GLASSMORPHISM COMPONENTS
+# 📱 MAIN NYX UI SCREEN
 # ═══════════════════════════════════════════════════════════════════════════
 
-class HeaderBar(FloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.size_hint = (1, 0.09)
-        self.pos_hint = {'x': 0, 'top': 1.0}
-
-        with self.canvas.before:
-            Color(0.02, 0.01, 0.05, 0.80)
-            self.rect = Rectangle(pos=self.pos, size=self.size)
-            Color(0.4, 0.2, 0.6, 0.25)
-            self.line = Line(points=[self.x, self.y, self.right, self.y], width=1)
-
-        self.bind(pos=self._update, size=self._update)
-
-    def _update(self, *args):
-        self.rect.pos = self.pos
-        self.rect.size = self.size
-        self.line.points = [self.x, self.y, self.right, self.y]
-
-
-class NavBar(FloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.size_hint = (1, 0.09)
-        self.pos_hint = {'x': 0, 'y': 0}
-
-        with self.canvas.before:
-            Color(0.03, 0.02, 0.07, 0.92)
-            self.rect = Rectangle(pos=self.pos, size=self.size)
-            Color(0.3, 0.2, 0.5, 0.3)
-            self.line = Line(points=[self.x, self.top, self.right, self.top], width=1)
-
-        self.bind(pos=self._update, size=self._update)
-
-    def _update(self, *args):
-        self.rect.pos = self.pos
-        self.rect.size = self.size
-        self.line.points = [self.x, self.top, self.right, self.top]
-
-
-class GlassStatusCard(FloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.size_hint = (0.85, 0.065)
-        self.pos_hint = {'center_x': 0.5, 'center_y': 0.82}
-        
-        with self.canvas.before:
-            Color(0.05, 0.03, 0.12, 0.65)
-            self.rect = RoundedRectangle(pos=self.pos, size=self.size, radius=[16])
-            Color(0.45, 0.25, 0.65, 0.35)
-            self.border = Line(rounded_rectangle=(self.x, self.y, self.width, self.height, 16), width=1)
-
-        self.bind(pos=self._update_bg, size=self._update_bg)
-
-        self.label = Label(
-            text="Siap mendengarkan...",
-            font_size='15sp',
-            color=WHITE_BRIGHT,
-            bold=True,
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
-        )
-        self.add_widget(self.label)
-
-    def _update_bg(self, *args):
-        self.rect.pos = self.pos
-        self.rect.size = self.size
-        self.border.rounded_rectangle = (self.x, self.y, self.width, self.height, 16)
-
-    def set_text(self, text):
-        self.label.text = text
-
-
-class SubtitleBox(FloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.size_hint = (0.72, 0.05)
-        self.pos_hint = {'center_x': 0.5, 'center_y': 0.31}
-
-        with self.canvas.before:
-            Color(0.05, 0.03, 0.12, 0.65)
-            self.bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[14])
-
-        self.bind(pos=self._update_bg, size=self._update_bg)
-
-        self.label = Label(
-            text='Ucapkan "Nyx" diikuti perintah',
-            font_size='12.5sp',
-            color=GRAY_TEXT,
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
-        )
-        self.add_widget(self.label)
-
-    def _update_bg(self, *args):
-        self.bg.pos = self.pos
-        self.bg.size = self.size
-
-
-class SuggestionChip(Label):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.font_size = '12.5sp'
-        self.color = WHITE_SOFT
-        self.size_hint = (1, None)
-        self.height = 38
-        self.padding = (16, 0)
-        self.halign = 'left'
-        self.valign = 'middle'
-        self.bind(size=self._draw_bg, pos=self._draw_bg)
-
-    def _draw_bg(self, *args):
-        self.text_size = (self.width - 32, None)
-        self.canvas.before.clear()
-        with self.canvas.before:
-            Color(0.08, 0.06, 0.16, 0.70)
-            RoundedRectangle(pos=self.pos, size=self.size, radius=[14])
-            Color(0.35, 0.25, 0.50, 0.35)
-            Line(rounded_rectangle=(self.x, self.y, self.width, self.height, 14), width=1)
-
-    def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):
-            anim = (Animation(color=PURPLE_GLOW, duration=0.15) + Animation(color=WHITE_SOFT, duration=0.15))
-            anim.start(self)
-            app = App.get_running_app()
-            app.root.handle_command(self.text.replace('"', ''))
-            return True
-        return super().on_touch_down(touch)
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# 📱 MAIN SCREEN
-# ═══════════════════════════════════════════════════════════════════════════
-
-class NyxMainScreen(FloatLayout):
-
+class NyxMainScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._build_ui()
 
     def _build_ui(self):
-        # 1. Background Nebula
-        self.bg_image = Image(
-            source='nebula01.jpg',
-            allow_stretch=True,
-            keep_ratio=False,
-            size_hint=(1.25, 1.25),
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
-        )
-        self.add_widget(self.bg_image)
+        root_layout = MDFloatLayout()
 
-        # Animasi Floating Background
-        bg_anim = (
-            Animation(pos_hint={'center_x': 0.46, 'center_y': 0.54}, duration=14, t='in_out_sine') +
-            Animation(pos_hint={'center_x': 0.54, 'center_y': 0.46}, duration=16, t='in_out_sine') +
-            Animation(pos_hint={'center_x': 0.50, 'center_y': 0.50}, duration=14, t='in_out_sine')
+        # ─── 1. TOP HEADER BAR ───
+        header = MDBoxLayout(
+            orientation='horizontal',
+            size_hint=(1, 0.08),
+            pos_hint={'top': 1.0},
+            padding=[16, 0]
         )
-        bg_anim.repeat = True
-        bg_anim.start(self.bg_image)
-
-        # 2. Header Bar
-        header = HeaderBar()
-        icon_menu = CanvasIcon(icon_type="menu", pos_hint={'x': 0.06, 'center_y': 0.5})
-        title = Label(
+        btn_menu = MDIconButton(
+            icon="menu-open",
+            theme_icon_color="Custom",
+            icon_color=(0.85, 0.85, 1.0, 0.9),
+            pos_hint={'center_y': 0.5}
+        )
+        title = MDLabel(
             text="N Y X",
-            font_size='28sp',
-            color=WHITE_BRIGHT,
+            font_style="H5",
             bold=True,
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
+            halign="center",
+            theme_text_color="Custom",
+            text_color=(1, 1, 1, 0.95),
+            pos_hint={'center_y': 0.5}
         )
-        icon_settings = CanvasIcon(icon_type="settings", pos_hint={'right': 0.94, 'center_y': 0.5})
-
-        header.add_widget(icon_menu)
+        btn_settings = MDIconButton(
+            icon="cog-outline",
+            theme_icon_color="Custom",
+            icon_color=(0.85, 0.85, 1.0, 0.9),
+            pos_hint={'center_y': 0.5}
+        )
+        header.add_widget(btn_menu)
         header.add_widget(title)
-        header.add_widget(icon_settings)
-        self.add_widget(header)
+        header.add_widget(btn_settings)
+        root_layout.add_widget(header)
 
-        # 3. Status Card
-        self.status_card = GlassStatusCard()
-        self.add_widget(self.status_card)
+        # ─── 2. GLASS STATUS CARD ───
+        self.status_card = MDCard(
+            size_hint=(0.88, 0.075),
+            pos_hint={'center_x': 0.5, 'center_y': 0.83},
+            md_bg_color=(0.08, 0.05, 0.18, 0.75),
+            line_color=(0.4, 0.25, 0.65, 0.4),
+            radius=[20]
+        )
+        self.status_label = MDLabel(
+            text="Siap mendengarkan...",
+            halign="center",
+            bold=True,
+            theme_text_color="Custom",
+            text_color=(0.95, 0.95, 1.0, 0.95)
+        )
+        self.status_card.add_widget(self.status_label)
+        root_layout.add_widget(self.status_card)
 
-        # 4. Vortex
-        self.vortex = RotatingVortex(
-            size_hint=(0.75, 0.38),
+        # ─── 3. PROCEDURAL VECTOR AI CORE ───
+        self.ai_core = ProceduralAICore(
+            size_hint=(0.8, 0.4),
             pos_hint={'center_x': 0.5, 'center_y': 0.52}
         )
-        self.add_widget(self.vortex)
+        root_layout.add_widget(self.ai_core)
 
-        # 5. Subtitle Hint
-        sub_box = SubtitleBox()
-        self.add_widget(sub_box)
-
-        # 6. Suggestion Chips
-        chips_box = BoxLayout(
-            orientation='vertical',
-            spacing=10,
-            size_hint=(0.60, 0.14),
-            pos_hint={'x': 0.06, 'center_y': 0.20}
+        # ─── 4. SUBTITLE HINT CARD ───
+        sub_card = MDCard(
+            size_hint=(0.75, 0.05),
+            pos_hint={'center_x': 0.5, 'center_y': 0.30},
+            md_bg_color=(0.07, 0.04, 0.15, 0.6),
+            radius=[14]
         )
-        chips_box.add_widget(SuggestionChip(text='"Nyx, timer 10 menit"'))
-        chips_box.add_widget(SuggestionChip(text='"Nyx, buka YouTube"'))
-        self.add_widget(chips_box)
+        sub_label = MDLabel(
+            text='Ucapkan "Nyx" diikuti perintah',
+            halign="center",
+            font_style="Caption",
+            theme_text_color="Custom",
+            text_color=(0.7, 0.7, 0.85, 0.8)
+        )
+        sub_card.add_widget(sub_label)
+        root_layout.add_widget(sub_card)
 
-        # 7. Voice FAB Button
-        fab = VoiceFAB(pos_hint={'right': 0.94, 'center_y': 0.20})
-        self.add_widget(fab)
-
-        # 8. Nav Bar
-        nav_bar = NavBar()
-        nav_box = BoxLayout(orientation='horizontal', size_hint=(1, 1), pos_hint={'x': 0, 'y': 0})
-        nav_items = [("home", "Beranda"), ("chat", "Chat"), ("action", "Aksi"), ("history", "Riwayat")]
+        # ─── 5. SUGGESTION CHIPS ───
+        chips_box = MDBoxLayout(
+            orientation='vertical',
+            spacing=8,
+            size_hint=(0.62, 0.12),
+            pos_hint={'x': 0.06, 'center_y': 0.19}
+        )
         
+        for text in ['"Nyx, timer 10 menit"', '"Nyx, buka YouTube"']:
+            chip_card = MDCard(
+                size_hint=(1, 0.48),
+                md_bg_color=(0.1, 0.07, 0.22, 0.8),
+                line_color=(0.35, 0.2, 0.55, 0.3),
+                radius=[12],
+                padding=[12, 0]
+            )
+            chip_label = MDLabel(
+                text=text,
+                font_style="Caption",
+                theme_text_color="Custom",
+                text_color=(0.9, 0.9, 1.0, 0.85)
+            )
+            chip_card.add_widget(chip_label)
+            chips_box.add_widget(chip_card)
+
+        root_layout.add_widget(chips_box)
+
+        # ─── 6. FAB VOICE BUTTON ───
+        self.fab = MDFloatingActionButton(
+            icon="microphone-variant",
+            pos_hint={'right': 0.94, 'center_y': 0.19},
+            md_bg_color=(0.65, 0.25, 0.98, 1),
+            icon_color=(1, 1, 1, 1),
+            on_release=self._toggle_voice
+        )
+        self.fab.is_active = False
+        root_layout.add_widget(self.fab)
+
+        # ─── 7. BOTTOM NAVIGATION BAR ───
+        nav_bar = MDCard(
+            size_hint=(1, 0.085),
+            pos_hint={'x': 0, 'y': 0},
+            md_bg_color=(0.05, 0.03, 0.12, 0.95),
+            line_color=(0.3, 0.2, 0.5, 0.3),
+            radius=[0]
+        )
+        nav_box = MDBoxLayout(orientation='horizontal')
+        nav_items = [
+            ("home", "Beranda"),
+            ("message-text-outline", "Chat"),
+            ("widgets-outline", "Aksi"),
+            ("history", "Riwayat")
+        ]
+
         for icon_name, label_text in nav_items:
-            item_box = BoxLayout(orientation='vertical', padding=(0, 6), spacing=2)
-            icon_container = FloatLayout(size_hint=(1, 0.55))
-            icon_widget = CanvasIcon(icon_type=icon_name, pos_hint={'center_x': 0.5, 'center_y': 0.5})
-            icon_container.add_widget(icon_widget)
-            
-            lbl_txt = Label(text=label_text, font_size='10sp', color=GRAY_TEXT, size_hint=(1, 0.45))
-            
-            item_box.add_widget(icon_container)
-            item_box.add_widget(lbl_txt)
+            item_box = MDBoxLayout(orientation='vertical', padding=[0, 4], spacing=0)
+            icon_btn = MDIconButton(
+                icon=icon_name,
+                theme_icon_color="Custom",
+                icon_color=(0.7, 0.7, 0.85, 0.8),
+                pos_hint={'center_x': 0.5}
+            )
+            lbl = MDLabel(
+                text=label_text,
+                halign="center",
+                font_style="Overline",
+                theme_text_color="Custom",
+                text_color=(0.7, 0.7, 0.85, 0.8)
+            )
+            item_box.add_widget(icon_btn)
+            item_box.add_widget(lbl)
             nav_box.add_widget(item_box)
 
         nav_bar.add_widget(nav_box)
-        self.add_widget(nav_bar)
+        root_layout.add_widget(nav_bar)
 
-    # ─── HANDLERS ───
-    def handle_command(self, text):
-        self.status_card.set_text(f"📩 {text}")
+        self.add_widget(root_layout)
 
-    def handle_voice_start(self):
-        self.status_card.set_text("🎤 Mendengarkan...")
+    def _toggle_voice(self, instance):
+        self.fab.is_active = not self.fab.is_active
+        if self.fab.is_active:
+            self.fab.icon = "square"
+            self.fab.md_bg_color = (0.9, 0.2, 0.4, 1)
+            self.status_label.text = "🎤 Mendengarkan..."
+        else:
+            self.fab.icon = "microphone-variant"
+            self.fab.md_bg_color = (0.65, 0.25, 0.98, 1)
+            self.status_label.text = "Siap mendengarkan..."
 
-    def handle_voice_stop(self):
-        self.status_card.set_text("Siap mendengarkan...")
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 🚀 MAIN APP CLASS
+# ═══════════════════════════════════════════════════════════════════════════
 
-class NyxApp(App):
+class NyxApp(MDApp):
     def build(self):
-        # 🟢 DIPERBAIKI: Mengatur warna background window di dalam lifecycle Kivy App yang aman
-        Window.clearcolor = (0, 0, 0, 1)
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "DeepPurple"
         return NyxMainScreen()
 
 
