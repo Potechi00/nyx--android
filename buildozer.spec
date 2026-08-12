@@ -6,8 +6,8 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 0.1
 
-# 🟢 Kunci versi untuk stabilitas jangka panjang
-requirements = python3==3.11.9,kivy==2.3.0,plyer
+# 🟢 DIPERBAIKI: Hapus '==3.11.9' agar hostpython3 & python3 otomatis sinkron
+requirements = python3,kivy==2.3.0,plyer
 
 orientation = portrait
 android.permissions = RECORD_AUDIO,INTERNET
