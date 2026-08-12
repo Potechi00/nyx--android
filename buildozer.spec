@@ -6,7 +6,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 0.1
 
-# 🟢 DIPERBAIKI: Hapus '==3.11.9' agar hostpython3 & python3 otomatis sinkron
+# 🟢 Cukup 'python3' saja, karena p4a==2024.1.2 otomatis menyiapkan Python 3.11
 requirements = python3,kivy==2.3.0,plyer
 
 orientation = portrait
