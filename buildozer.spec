@@ -6,7 +6,8 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 0.1
 
-requirements = python3,kivy==2.3.0,plyer
+# 🟢 DIPERBAIKI: Menambahkan 'pillow' untuk mendukung gambar .jpg
+requirements = python3,kivy==2.3.0,plyer,pillow
 
 orientation = portrait
 android.permissions = RECORD_AUDIO,INTERNET
@@ -17,7 +18,6 @@ android.accept_sdk_license = True
 android.archs = arm64-v8a, armeabi-v7a
 p4a.bootstrap = sdl2
 
-# 🟢 KUNCI UTAMA: Paksa Buildozer mengunduh versi stabil v2024.01.21 (Python 3.11)
 p4a.branch = v2024.01.21
 
 [buildozer]
