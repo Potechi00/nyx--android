@@ -16,7 +16,7 @@ jobs:
     - name: 📥 Checkout code
       uses: actions/checkout@v4
     
-    - name: 🐍 Setup Python
+    - name: 🐍 Setup Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
@@ -31,44 +31,24 @@ jobs:
       run: |
         sudo apt-get update -y
         sudo apt-get install -y \
-          python3-pip \
-          build-essential \
-          git \
-          autoconf \
-          automake \
-          libtool \
-          libltdl-dev \
-          pkg-config \
-          zlib1g-dev \
-          libncurses-dev \
-          cmake \
-          libffi-dev \
-          libssl-dev \
-          unzip \
-          wget
+          python3-pip build-essential git autoconf automake libtool \
+          libltdl-dev pkg-config zlib1g-dev libncurses-dev cmake \
+          libffi-dev libssl-dev unzip wget
     
     - name: 📦 Install Python Dependencies
       run: |
-        pip install --upgrade pip
-        pip install buildozer==1.5.0 cython virtualenv
+        python -m pip install --upgrade pip setuptools
+        # Kunci versi Cython dan Buildozer agar stabil
+        pip install "cython==0.29.36" buildozer==1.5.0 virtualenv
     
-    - name: 🧹 Aggressive Clean Cache
+    - name: 🧹 Clean Cache
       run: |
         rm -rf .buildozer
         rm -rf ~/.buildozer
-        rm -rf ~/.cache/pip
         rm -rf ~/.gradle/caches
-        rm -rf ~/.python-for-android
-        echo "✅ All cache cleared"
     
     - name: 🔨 Build Debug APK
       run: |
-        export USE_SDL2=1
-        export ACLOCAL_PATH=/usr/share/aclocal
-        export ACLOCAL="aclocal -I /usr/share/aclocal"
-        export CFLAGS="-O2"
-        libtoolize --force --copy --install 2>/dev/null || true
-        autoreconf --install --verbose 2>/dev/null || true
         buildozer android debug
     
     - name: 📤 Upload APK Artifact
@@ -83,9 +63,7 @@ jobs:
       with:
         tag_name: v0.1-build-${{ github.run_number }}
         name: "🌑 NYX v0.1 - Build #${{ github.run_number }}"
-        body: |
-          ## 🔨 Build otomatis
-          Download APK & install di HP.
+        body: "APK Build Otomatis"
         files: bin/*.apk
         draft: false
         prerelease: true
