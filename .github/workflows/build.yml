@@ -39,8 +39,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools
         pip install "cython==0.29.36" "buildozer==1.5.0" virtualenv
-        # 🟢 FIX: Install p4a langsung dari Git Tag v2024.01.21 (Stabil & Menggunakan Python 3.11)
-        pip install git+https://github.com/kivy/python-for-android.git@v2024.01.21
     
     - name: 🧹 Clean Cache
       run: |
