@@ -1,6 +1,6 @@
 """
 🌑 NYX - Personal AI Assistant
-Systematic & Glowing UI Edition v3.0
+Custom Assets Edition (nebula01.jpg + vortex.png)
 """
 
 import kivy
@@ -36,14 +36,14 @@ class RotatingVortex(FloatLayout):
         super().__init__(**kwargs)
         self.angle = 0
 
-        # Layer 1: Aura Glow lembut di latar belakang vortex
+        # Layer 1: Aura Glow lembut
         with self.canvas.before:
             Color(0.5, 0.15, 0.8, 0.25)
             self.glow = Ellipse(pos=self.pos, size=self.size)
 
         self.bind(pos=self._update_glow, size=self._update_glow)
 
-        # Layer 2: Gambar Vortex yang diputar
+        # Layer 2: Gambar vortex.png yang diputar
         self.vortex_img = Image(
             source='vortex.png',
             allow_stretch=True,
@@ -63,7 +63,6 @@ class RotatingVortex(FloatLayout):
         Clock.schedule_interval(self._rotate, 1 / 30)
 
     def _update_glow(self, *args):
-        # Buat aura sedikit lebih besar dari widget
         pad = self.width * 0.1
         self.glow.pos = (self.x - pad/2, self.y - pad/2)
         self.glow.size = (self.width + pad, self.height + pad)
@@ -77,7 +76,7 @@ class RotatingVortex(FloatLayout):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 🎨 CANVAS DRAWN ICONS
+# 🎨 CANVAS DRAWN ICONS & VOICE BUTTON
 # ═══════════════════════════════════════════════════════════════════════════
 
 class CanvasIcon(Widget):
@@ -127,12 +126,55 @@ class CanvasIcon(Widget):
                 Line(points=[cx, cy, cx + 4, cy], width=1.5)
 
 
+class VoiceFAB(Widget):
+    """Tombol suara bercahaya (tanpa butuh mic.png)"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (64, 64)
+        self.is_active = False
+        self.bind(pos=self._draw, size=self._draw)
+
+    def _draw(self, *args):
+        self.canvas.clear()
+        cx, cy = self.center_x, self.center_y
+
+        with self.canvas:
+            # Ring Glow Luar
+            Color(0.5, 0.2, 0.9, 0.35)
+            Ellipse(pos=(self.x - 4, self.y - 4), size=(self.width + 8, self.height + 8))
+
+            # Lingkaran Utama Ungu
+            Color(*PURPLE_GLOW)
+            Ellipse(pos=(self.x, self.y), size=self.size)
+
+            # Waveform Suara
+            Color(1, 1, 1, 0.95)
+            heights = [10, 20, 14, 24, 12]
+            spacing = 6
+            start_x = cx - (len(heights) * spacing) / 2 + 3
+
+            for i, h in enumerate(heights):
+                x = start_x + (i * spacing)
+                Line(points=[x, cy - h / 2, x, cy + h / 2], width=2.2)
+
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            self.is_active = not self.is_active
+            app = App.get_running_app()
+            if self.is_active:
+                app.root.handle_voice_start()
+            else:
+                app.root.handle_voice_stop()
+            return True
+        return super().on_touch_down(touch)
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 # 🏷️ GLASSMORPHISM COMPONENTS
 # ═══════════════════════════════════════════════════════════════════════════
 
 class GlassStatusCard(FloatLayout):
-    """Kartu status bercahaya di bagian atas"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size_hint = (0.8, 0.06)
@@ -165,7 +207,6 @@ class GlassStatusCard(FloatLayout):
 
 
 class SuggestionChip(Label):
-    """Chip kapsul perintah glassmorphism"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.font_size = '12.5sp'
@@ -197,7 +238,7 @@ class SuggestionChip(Label):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 📱 MAIN SCREEN (NYX UI v3.0)
+# 📱 MAIN SCREEN (NYX UI)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class NyxMainScreen(FloatLayout):
@@ -207,9 +248,9 @@ class NyxMainScreen(FloatLayout):
         self._build_ui()
 
     def _build_ui(self):
-        # 1. Background Image (nebula.jpg)
+        # 1. Background Image (Memanggil nebula01.jpg)
         self.bg_image = Image(
-            source='nebula.jpg',
+            source='nebula01.jpg',
             allow_stretch=True,
             keep_ratio=False,
             size_hint=(1, 1),
@@ -221,15 +262,12 @@ class NyxMainScreen(FloatLayout):
         header = FloatLayout(size_hint=(1, 0.09), pos_hint={'x': 0, 'top': 1.0})
         
         with header.canvas.before:
-            # Masking gelap di bagian paling atas agar title NYX sangat jelas
             Color(0.02, 0.01, 0.06, 0.85)
             Rectangle(pos=(0, Window.height * 0.91), size=(Window.width, Window.height * 0.09))
             Color(0.5, 0.2, 0.8, 0.3)
             Line(points=[0, Window.height * 0.91, Window.width, Window.height * 0.91], width=1)
 
         icon_menu = CanvasIcon(icon_type="menu", pos_hint={'x': 0.06, 'center_y': 0.5})
-        
-        # 🌟 TULISAN "NYX" SUPER MENONJOL & SANGAT JELAS 🌟
         title = Label(
             text="N Y X",
             font_size='30sp',
@@ -237,7 +275,6 @@ class NyxMainScreen(FloatLayout):
             bold=True,
             pos_hint={'center_x': 0.5, 'center_y': 0.5}
         )
-        
         icon_settings = CanvasIcon(icon_type="settings", pos_hint={'right': 0.94, 'center_y': 0.5})
 
         header.add_widget(icon_menu)
@@ -249,7 +286,7 @@ class NyxMainScreen(FloatLayout):
         self.status_card = GlassStatusCard()
         self.add_widget(self.status_card)
 
-        # 4. Black Hole Rotating Vortex dengan Aura Glow
+        # 4. Black Hole Rotating Vortex (Memanggil vortex.png)
         self.vortex = RotatingVortex(
             size_hint=(0.82, 0.42),
             pos_hint={'center_x': 0.5, 'center_y': 0.54}
@@ -276,26 +313,11 @@ class NyxMainScreen(FloatLayout):
         chips_box.add_widget(SuggestionChip(text='"Nyx, buka YouTube"'))
         self.add_widget(chips_box)
 
-        # 7. Voice FAB (mic.png dengan Glowing Ring)
-        fab_container = FloatLayout(
-            size_hint=(None, None),
-            size=(68, 68),
-            pos_hint={'right': 0.94, 'center_y': 0.20}
-        )
-        
-        with fab_container.canvas.before:
-            Color(0.5, 0.2, 0.9, 0.35)
-            Ellipse(pos=(-4, -4), size=(76, 76))
+        # 7. Voice FAB Button
+        fab = VoiceFAB(pos_hint={'right': 0.94, 'center_y': 0.20})
+        self.add_widget(fab)
 
-        fab_img = Image(
-            source='mic.png',
-            size_hint=(1, 1),
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
-        )
-        fab_container.add_widget(fab_img)
-        self.add_widget(fab_container)
-
-        # 8. Glassmorphism Navigation Bar
+        # 8. Navigation Bar Bawah
         nav_bar = FloatLayout(size_hint=(1, 0.09), pos_hint={'x': 0, 'y': 0})
         
         with nav_bar.canvas.before:
