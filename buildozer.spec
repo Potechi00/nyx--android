@@ -19,7 +19,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 version = 3.0.0
 
 # (list) Application requirements
-requirements = python3,kivy==2.4.0,https://github.com/kivymd/KivyMD/archive/master.zip,pillow,requests,urllib3,certifi,chardet,idna
+requirements = python3,kivy==2.3.0,kivymd==1.2.0,pillow,requests,urllib3,certifi,chardet,idna
 
 # (str) Supported orientation (portrait/landscape)
 orientation = portrait
@@ -55,3 +55,6 @@ log_level = 2
 
 # (int) Display warning if buildozer is run as root
 warn_on_root = 1
+
+# Timeout jaringan p4a
+p4a.timeout = 60
