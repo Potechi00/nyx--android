@@ -19,8 +19,8 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 version = 3.0.0
 
 # (list) Application requirements
-# PENTING: pillow & library jaringan wajib ada agar KivyMD tidak Force Close!
-requirements = python3,kivy==2.3.0,kivymd==1.2.0,pillow,requests,urllib3,idna,certifi,chardet
+# PENTING: Mengunci python3==3.11.9 agar tidak bentrok dengan Python 3.14!
+requirements = python3==3.11.9,kivy==2.3.0,kivymd==1.2.0,pillow,requests,urllib3,idna,certifi,chardet
 
 # (str) Supported orientation (portrait/landscape)
 orientation = portrait
