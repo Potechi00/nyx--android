@@ -55,10 +55,10 @@ jobs:
             zip \
             unzip
 
-      - name: 🚀 Install Buildozer & Fixed Tools
+      - name: 🚀 Install Buildozer & Tools
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install "cython==3.0.11" "buildozer==1.5.0" "python-for-android==2024.1.21"
+          python -m pip install "cython==3.0.11" buildozer
 
       - name: 🔨 Build Debug APK
         run: |
