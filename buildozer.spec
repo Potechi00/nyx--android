@@ -19,8 +19,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 version = 3.0.0
 
 # (list) Application requirements
-# PENTING: Tulis 'python3.11' secara eksplisit agar p4a TIDAK mengambil Python 3.14!
-requirements = python3.11,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/master.zip,pillow,requests,urllib3,certifi,chardet,idna
+requirements = python3,kivy==2.4.0,https://github.com/kivymd/KivyMD/archive/master.zip,pillow,requests,urllib3,certifi,chardet,idna
 
 # (str) Supported orientation (portrait/landscape)
 orientation = portrait
