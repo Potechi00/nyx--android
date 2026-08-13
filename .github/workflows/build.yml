@@ -55,9 +55,9 @@ jobs:
             zip \
             unzip
 
-      - name: 🚀 Install Buildozer & Tools (Cython 0.29 untuk Kivy 2.2.1)
+      - name: 🚀 Install Buildozer & Tools
         run: |
-          python -m pip install --upgrade "pip<24.0" "setuptools<70.0.0" "cython<3.0.0" buildozer
+          python -m pip install --upgrade "pip<24.0" "setuptools<70.0.0" "cython<3.0.0" wheel buildozer
 
       - name: 🔨 Build Debug APK
         run: |
