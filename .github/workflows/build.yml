@@ -55,9 +55,9 @@ jobs:
             zip \
             unzip
 
-      - name: 🚀 Install Buildozer & Tools (Upgrade to Cython 3.x for Kivy 2.3.0)
+      - name: 🚀 Install Buildozer & Tools (Upgrade Cython)
         run: |
-          python -m pip install --upgrade "pip<24.0" "setuptools<70.0.0" "cython>=3.0.0,<3.1.0" buildozer
+          python -m pip install --upgrade "pip<24.0" "setuptools<70.0.0" "cython>=3.1.0" buildozer
 
       - name: 🔨 Build Debug APK
         run: |
