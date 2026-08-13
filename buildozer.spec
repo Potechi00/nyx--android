@@ -19,8 +19,8 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 version = 3.0.0
 
 # (list) Application requirements
-# Hapus pillow & gunakan Kivy 2.2.1 + KivyMD 1.1.1 (Resep paling stabil tanpa error wheel/C-API)
-requirements = python3,kivy==2.2.1,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna
+# Menambahkan setuptools agar build tools Kivy lengkap
+requirements = python3,kivy==2.2.1,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna,setuptools
 
 # (str) Supported orientation (portrait/landscape)
 orientation = portrait
@@ -59,3 +59,6 @@ warn_on_root = 1
 
 # Timeout jaringan p4a
 p4a.timeout = 60
+
+# PENTING: Memaksa p4a mendownload Python 3.11 (Bypass error cgi & Python 3.13+)
+p4a.extra_args = --python-version=3.11
