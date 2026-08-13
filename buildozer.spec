@@ -19,7 +19,6 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 version = 3.0.0
 
 # (list) Application requirements
-# PENTING: Pakai kivy==2.3.0 (bukan .zip) agar resep OpenGL ES Android aktif!
 requirements = python3,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna
 
 # (str) Supported orientation (portrait/landscape)
@@ -60,5 +59,5 @@ warn_on_root = 1
 # Timeout jaringan p4a
 p4a.timeout = 60
 
-# PENTING: Instruksi khusus p4a untuk mengunci runtime Android ke Python 3.11
-p4a.extra_args = --python-version=3.11
+# Cabang p4a stabil
+p4a.branch = v2024.01.21
