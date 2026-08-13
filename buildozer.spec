@@ -19,8 +19,8 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 version = 3.0.0
 
 # (list) Application requirements
-# PENTING: Kunci python3 ke 3.11.9 agar Buildozer berhenti mengunduh Python 3.14 eksperimental!
-requirements = python3==3.11.9,hostpython3==3.11.9,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,pillow,requests,urllib3,certifi,chardet,idna
+# Hapus pillow & gunakan Kivy 2.2.1 + KivyMD 1.1.1 (Resep paling stabil tanpa error wheel/C-API)
+requirements = python3,kivy==2.2.1,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna
 
 # (str) Supported orientation (portrait/landscape)
 orientation = portrait
