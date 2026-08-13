@@ -19,8 +19,8 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 version = 3.0.0
 
 # (list) Application requirements
-# PENTING: python3 dan hostpython3 dikunci di versi yang sama persis (3.11.9)
-requirements = python3==3.11.9,hostpython3==3.11.9,kivy==2.3.0,kivymd==1.2.0,pillow,requests,urllib3,idna,certifi,chardet
+# Menggunakan kivymd dari github master & menyertakan pillow/requests secara bersih untuk Android
+requirements = python3,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/master.zip,pillow,requests,urllib3,certifi,chardet,idna
 
 # (str) Supported orientation (portrait/landscape)
 orientation = portrait
