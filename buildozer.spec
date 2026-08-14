@@ -1,26 +1,61 @@
 [app]
 
+# (str) Title of your application
 title = NYX
-package.name = nyxassistant
-package.domain = com.nyx
+
+# (str) Package name
+package.name = nyxapp
+
+# (str) Package domain (needed for android/ios packaging)
+package.domain = org.nyx
+
+# (str) Source code where the main.py lives
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
-version = 3.0
-requirements = python3==3.14.2,kivy==2.3.0,kivymd==1.1.1,plyer,cython==3.1.0,sh<2.0
+
+# (list) Source files to include (let empty to include all the files)
+source.include_exts = py,png,jpg,kv,atlas,ttf
+
+# (str) Application versioning
+version = 3.0.0
+
+# PENTING BANGET: Wajib tulis python3==3.11.0 secara EKSPLISIT!
+# Ini yang menghentikan Python 3.14.2 siluman masuk!
+requirements = python3==3.11.0,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna
+
+# (str) Supported orientation (portrait/landscape)
 orientation = portrait
 
-android.permissions = RECORD_AUDIO,INTERNET
+# (bool) Indicate if the application should be fullscreen or not
+fullscreen = 1
 
+# (list) Permissions
+android.permissions = INTERNET,RECORD_AUDIO
+
+# (int) Target Android API
 android.api = 33
-android.minapi = 24
+
+# (int) Minimum API your APK will support
+android.minapi = 21
+
+# (str) Android NDK version to use
 android.ndk = 25b
+
+# (bool) Accept SDK license automatically
 android.accept_sdk_license = True
 
-android.archs = arm64-v8a
+# (list) The Android archs to build for
+android.archs = arm64-v8a, armeabi-v7a
+
+# (bool) Enables Android auto backup feature
 android.allow_backup = True
 
-p4a.bootstrap = sdl2
-
 [buildozer]
+
+# (int) Log level (0 = error only, 1 = info, 2 = debug)
 log_level = 2
+
+# (int) Display warning if buildozer is run as root
 warn_on_root = 1
+
+# Timeout jaringan p4a
+p4a.timeout = 60
