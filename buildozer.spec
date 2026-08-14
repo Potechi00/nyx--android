@@ -6,7 +6,7 @@ package.domain = com.nyx
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 3.0
-requirements = python3==3.11.11,kivy==2.3.0,kivymd==1.1.1,plyer,cython==3.1.0
+requirements = python3==3.14.2,kivy==2.3.0,kivymd==1.1.1,plyer,cython==3.1.0,sh<2.0
 orientation = portrait
 
 android.permissions = RECORD_AUDIO,INTERNET
