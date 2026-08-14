@@ -55,15 +55,13 @@ jobs:
             zip \
             unzip
 
-      - name: 🚀 Install Buildozer & Tools
+      - name: 🚀 Install Buildozer & Golden Tools
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install "cython==3.0.11" "buildozer==1.5.0"
+          # Kunci ke versi murni yang dijamin tembus
+          python -m pip install "cython==0.29.33" "buildozer==1.5.0"
 
       - name: 🔨 Build Debug APK
-        env:
-          USE_CYTHON: "1"
-          KIVY_USE_CYTHON: "1"
         run: |
           buildozer android debug
 
