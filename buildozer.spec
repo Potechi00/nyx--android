@@ -18,8 +18,9 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 # (str) Application versioning
 version = 3.0.0
 
-# TETAP BERSIH: Biarkan bawaan p4a yang mengatur versi Python-nya (otomatis 3.11.4)
-requirements = python3,kivy==2.2.1,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna
+# HYBRID FORMULA: 
+# Kivy 2.3.0 (bebas cgi) + python3 & hostpython3 (otomatis sinkron di versi 3.11 oleh p4a)
+requirements = python3,hostpython3,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna
 
 # (str) Supported orientation (portrait/landscape)
 orientation = portrait
@@ -58,5 +59,3 @@ warn_on_root = 1
 
 # Timeout jaringan p4a
 p4a.timeout = 60
-
-# CATATAN: p4a.branch sengaja tidak ditulis di sini agar Buildozer memakai p4a versi 2024.1.21 yang diinstal via PIP
