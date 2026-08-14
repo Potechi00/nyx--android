@@ -58,8 +58,8 @@ jobs:
       - name: 🚀 Install Buildozer & Golden Tools
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          # Kunci ke versi murni yang dijamin tembus
-          python -m pip install "cython==0.29.33" "buildozer==1.5.0"
+          # KUNCI UTAMA: Paksa install p4a versi Jan 2024 agar Buildozer tidak narik versi terbaru (Python 3.14)
+          python -m pip install "cython==0.29.33" "python-for-android==2024.1.21" "buildozer==1.5.0"
 
       - name: 🔨 Build Debug APK
         run: |
