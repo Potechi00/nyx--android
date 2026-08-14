@@ -18,9 +18,8 @@ source.include_exts = py,png,jpg,kv,atlas,ttf
 # (str) Application versioning
 version = 3.0.0
 
-# PENTING BANGET: Wajib tulis python3==3.11.0 secara EKSPLISIT!
-# Ini yang menghentikan Python 3.14.2 siluman masuk!
-requirements = python3==3.11.0,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna
+# PENTING: Wajib mengunci python3 DAN hostpython3 ke 3.11.0 secara sejajar!
+requirements = python3==3.11.0,hostpython3==3.11.0,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/refs/tags/1.1.1.zip,requests,urllib3,certifi,chardet,idna
 
 # (str) Supported orientation (portrait/landscape)
 orientation = portrait
